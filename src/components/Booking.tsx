@@ -22,6 +22,7 @@ const Booking = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
@@ -46,24 +47,37 @@ const Booking = () => {
 
     if (!validateForm()) return;
 
+    setSubmitError(null);
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        eventDate: '',
-        eventType: '',
-        message: '',
+    try {
+      const formPayload = new URLSearchParams({
+        'form-name': 'booking',
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        eventDate: formData.eventDate,
+        eventType: formData.eventType,
+        message: formData.message,
       });
 
-      setTimeout(() => {
-        setIsSubmitted(false);
-      }, 5000);
-    }, 1500);
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formPayload.toString(),
+      });
+
+      if (!response.ok) throw new Error('Submission failed');
+
+      setIsSubmitted(true);
+      setFormData({ name: '', email: '', phone: '', eventDate: '', eventType: '', message: '' });
+
+      setTimeout(() => setIsSubmitted(false), 5000);
+    } catch {
+      setSubmitError('Something went wrong. Please try again or email us at info@thehop.net.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (
@@ -99,7 +113,20 @@ const Booking = () => {
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="bg-cream rounded-sm shadow-elegant p-8 md:p-12">
+          <form
+              name="booking"
+              data-netlify="true"
+              netlify-honeypot="bot-field"
+              onSubmit={handleSubmit}
+              className="bg-cream rounded-sm shadow-elegant p-8 md:p-12"
+            >
+              <input type="hidden" name="form-name" value="booking" />
+              <p className="hidden">
+                <label>Don't fill this out: <input name="bot-field" /></label>
+              </p>
+              {submitError && (
+                <p className="text-red-500 text-sm mb-6">{submitError}</p>
+              )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-charcoal mb-2">
