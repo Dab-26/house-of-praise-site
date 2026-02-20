@@ -19,7 +19,7 @@ const Music = () => {
       id: 1,
       type: 'instagram',
       thumbnailUrl: igThumbnail,
-      videoUrl: 'https://www.instagram.com/reel/DLspnCvIXAn/',
+      videoUrl: 'https://www.instagram.com/reel/DTVx0aBjrrq/',
       title: 'Worship Moment',
       description: 'Experience our latest worship sessions',
     },
