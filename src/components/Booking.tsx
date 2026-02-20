@@ -240,8 +240,8 @@ const Booking = () => {
         <div className="mt-12 text-center">
           <p className="text-charcoal/60 text-sm font-light">
             Prefer to reach out directly? Email us at{' '}
-            <a href="mailto:booking@houseofpraise.com" className="text-gold hover:underline">
-              booking@houseofpraise.com
+            <a href="mailto:info@thehop.net" className="text-gold hover:underline">
+              info@thehop.net
             </a>
           </p>
         </div>
